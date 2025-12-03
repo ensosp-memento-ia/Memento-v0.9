@@ -26,22 +26,50 @@ body {
   display: flex;
   background: #e9ecf5;
   padding: 10px;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: nowrap; /* ✅ Force 1 ligne */
 }
 
 .tab {
   flex: 1;
   text-align: center;
-  padding: 12px;
+  padding: 12px 8px;
   border-radius: 25px;
   text-decoration: none;
   color: #001F8F;
   font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 .tab.active {
   background: #001F8F;
   color: white;
+}
+
+/* Mobile : onglets restent en ligne */
+@media (max-width: 768px) {
+  .tabs {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .tab {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs {
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 8px 4px;
+    font-size: 11px;
+  }
 }
 
 /* ============================================================
