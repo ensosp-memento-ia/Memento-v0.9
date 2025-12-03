@@ -155,6 +155,8 @@ function normaliseWrapper(raw) {
 // Décodage Wrapper → fiche JSON reconstruite
 // ------------------------------------------------------
 export function decodeFiche(raw) {
+  console.log("[DECODE] Entrée brute :", typeof raw, raw);
+
   if (!window.pako) {
     throw new Error("❌ Librairie pako non chargée");
   }
@@ -162,14 +164,16 @@ export function decodeFiche(raw) {
   let wrapper;
   try {
     wrapper = normaliseWrapper(raw);
+    console.log("[DECODE] Wrapper normalisé :", wrapper);
   } catch (e) {
     console.error("❌ Erreur normalisation wrapper :", e);
-    throw e;
+    throw new Error("QR Code illisible : " + e.message);
   }
 
   let compressed;
   try {
     compressed = base64ToUint8(wrapper.d);
+    console.log("[DECODE] Données décompressées (length) :", compressed.length);
   } catch (e) {
     console.error("❌ Erreur décodage Base64 :", e);
     throw new Error("QR Code corrompu (Base64 invalide)");
@@ -178,14 +182,16 @@ export function decodeFiche(raw) {
   let inflated;
   try {
     inflated = window.pako.inflate(compressed);
+    console.log("[DECODE] Données inflatées (length) :", inflated.length);
   } catch (e) {
     console.error("❌ Erreur DEFLATE :", e);
-    throw new Error("QR Code corrompu (décompression échouée)");
+    throw new Error("QR Code corrompu (décompression échouée). Le QR a peut-être été généré avec une version différente.");
   }
 
   let obj;
   try {
     const jsonString = new TextDecoder().decode(inflated);
+    console.log("[DECODE] JSON string :", jsonString.substring(0, 100) + "...");
     obj = JSON.parse(jsonString);
   } catch (e) {
     console.error("❌ Erreur parsing JSON décompressé :", e);
@@ -194,9 +200,11 @@ export function decodeFiche(raw) {
 
   // Reconstruction de la fiche complète
   try {
-    return fromCompact(obj);
+    const fiche = fromCompact(obj);
+    console.log("[DECODE] Fiche reconstruite :", fiche);
+    return fiche;
   } catch (e) {
     console.error("❌ Erreur reconstruction fiche :", e);
-    throw new Error("Structure de fiche invalide");
+    throw new Error("Structure de fiche invalide : " + e.message);
   }
 }
