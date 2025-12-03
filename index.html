@@ -44,6 +44,7 @@
       padding: 15px;
       gap: 12px;
       text-align: center;
+      overflow-y: auto; /* ✅ Permet scroll du contenu si nécessaire */
     }
 
     h1 {
@@ -113,6 +114,7 @@
       text-align: center;
       font-size: 11px;
       color: #444;
+      flex-shrink: 0; /* ✅ Footer toujours visible sans scroll */
     }
 
     /* Mobile optimization - ultra compact */
@@ -127,8 +129,8 @@
       }
 
       main {
-        padding: 12px;
-        gap: 10px;
+        padding: 10px;
+        gap: 8px;
       }
 
       main > p {
@@ -164,13 +166,27 @@
       }
 
       main {
-        padding: 10px;
-        gap: 8px;
+        padding: 8px;
+        gap: 6px;
+      }
+
+      main > p {
+        font-size: 12px;
+      }
+
+      .disclaimer {
+        font-size: 10px;
+        padding: 6px 8px;
       }
 
       .btn {
-        padding: 11px;
+        padding: 10px;
         font-size: 14px;
+      }
+
+      footer {
+        font-size: 9px;
+        padding: 6px;
       }
     }
   </style>
@@ -185,7 +201,7 @@
     <h1>Bienvenue</h1>
     
     <p>
-      Sélectionnez une action pour commencer. Vous pouvez créer une fiche opérationnelle IA ou lire une fiche existante grâce au QR code.
+      Sélectionnez une action pour commencer. Vous pouvez créer une fiche opérationnelle IA ou lire une fiche existante au moyen du scan.
     </p>
 
     <div class="disclaimer">
