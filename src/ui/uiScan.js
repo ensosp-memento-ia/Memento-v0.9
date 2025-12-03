@@ -1,6 +1,6 @@
 // ========================================================================
 // uiScan.js — Lecture + exploitation de fiche IA RCH
-// Version corrigée : cleanup scanner + validation améliorée
+// VERSION FINALE : toutes corrections + bouton reset
 // ========================================================================
 
 import { decodeFiche } from "../core/compression.js";
@@ -30,6 +30,9 @@ const fileInput     = document.getElementById("qrFileInput");
 window.currentFiche = null;
 let scanner = null;
 
+// Bouton reset
+const btnResetScan = document.getElementById("btnResetScan");
+
 // ------------------------------------------------------------------------
 // ✅ CORRECTION : Cleanup systématique du scanner
 // ------------------------------------------------------------------------
@@ -54,6 +57,58 @@ async function cleanupScanner() {
 }
 
 // ------------------------------------------------------------------------
+// ✅ NOUVELLE FONCTION : Réinitialisation complète
+// ------------------------------------------------------------------------
+function resetScanPage() {
+  console.log("🔄 Réinitialisation de la page scan");
+
+  // 1. Cleanup scanner si actif
+  cleanupScanner();
+
+  // 2. Reset des données
+  window.currentFiche = null;
+
+  // 3. Masquer toutes les sections sauf scan
+  if (sectionScan) sectionScan.style.display = "block";
+  if (sectionMeta) sectionMeta.style.display = "none";
+  if (sectionVars) sectionVars.style.display = "none";
+  if (sectionExtra) sectionExtra.style.display = "none";
+  if (sectionPrompt) sectionPrompt.style.display = "none";
+
+  // 4. Vider les contenus
+  if (metaHeader) metaHeader.innerHTML = "";
+  if (scanVariables) scanVariables.innerHTML = "";
+  if (extraInput) extraInput.value = "";
+  if (promptResult) promptResult.textContent = "";
+  if (aiButtons) aiButtons.innerHTML = "";
+
+  // 5. Reset input fichier
+  if (fileInput) fileInput.value = "";
+
+  // 6. Masquer le bouton reset
+  if (btnResetScan) btnResetScan.style.display = "none";
+
+  // 7. Réactiver les boutons caméra
+  if (btnStartCam) btnStartCam.disabled = false;
+  if (btnStopCam) btnStopCam.disabled = true;
+  if (videoContainer) videoContainer.style.display = "none";
+
+  console.log("✅ Page réinitialisée");
+}
+
+// ------------------------------------------------------------------------
+// Bouton Reset
+// ------------------------------------------------------------------------
+if (btnResetScan) {
+  btnResetScan.addEventListener("click", () => {
+    const confirm = window.confirm("⚠️ Voulez-vous vraiment scanner une nouvelle fiche ?\n\nLes données actuelles seront perdues.");
+    if (confirm) {
+      resetScanPage();
+    }
+  });
+}
+
+// ------------------------------------------------------------------------
 // Quand une fiche est décodée (depuis fichier ou caméra)
 // ------------------------------------------------------------------------
 function onFicheDecoded(fiche) {
@@ -68,16 +123,29 @@ function onFicheDecoded(fiche) {
   if (sectionExtra)  sectionExtra.style.display  = "block";
   if (sectionPrompt) sectionPrompt.style.display = "block";
 
-  // 2) Remplir les métadonnées
+  // ✅ Afficher le bouton reset
+  if (btnResetScan) btnResetScan.style.display = "block";
+
+  // 2) Remplir les métadonnées - Format condensé
   if (metaHeader) {
-    metaHeader.style.display = "block"; // ✅ CORRECTION : Afficher le bloc
+    metaHeader.style.display = "block";
     metaHeader.innerHTML = `
-      <h3>${fiche.meta?.titre || "Titre inconnu"}</h3>
-      <div class="meta-line"><b>Catégorie :</b> ${fiche.meta?.categorie || "-"}</div>
-      <div class="meta-line"><b>Objectif :</b> ${fiche.meta?.objectif || "-"}</div>
-      <div class="meta-line"><b>Concepteur :</b> ${fiche.meta?.concepteur || "-"}</div>
-      <div class="meta-line"><b>Version :</b> ${fiche.meta?.version || "1.0"}</div>
-      <div class="meta-line"><b>Mis à jour le :</b> ${fiche.meta?.date || "-"}</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-weight:700;color:#001F8F;font-size:16px;margin-bottom:4px;">
+          ${fiche.meta?.categorie || "Catégorie non renseignée"}
+        </div>
+        <div style="font-size:18px;font-weight:600;color:#001F8F;">
+          ${fiche.meta?.titre || "Titre inconnu"}
+        </div>
+      </div>
+      <div style="font-style:italic;color:#555;font-size:14px;margin-bottom:8px;line-height:1.4;">
+        <span style="font-weight:600;">Objectif :</span> ${fiche.meta?.objectif || "-"}
+      </div>
+      <div style="font-size:13px;color:#666;line-height:1.6;">
+        ${fiche.meta?.concepteur || "Concepteur non renseigné"} • 
+        Version ${fiche.meta?.version || "1.0"} • 
+        ${fiche.meta?.date || "Date non renseignée"}
+      </div>
     `;
   }
 
