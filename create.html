@@ -19,12 +19,23 @@
 <body>
 
   <!-- ========================================================= -->
-  <!-- BARRE D'ONGLETS + Retour Accueil -->
+  <!-- BARRE D'ONGLETS -->
   <!-- ========================================================= -->
   <nav class="tabs">
     <a href="index.html" class="tab">🏠 Accueil</a>
     <a href="scan.html" class="tab">📷 Lecture QR</a>
     <a class="tab active">📝 Création de fiche</a>
+  </nav>
+
+  <!-- ========================================================= -->
+  <!-- NAVIGATION RAPIDE SECTIONS -->
+  <!-- ========================================================= -->
+  <nav class="section-nav">
+    <a href="#section-meta" class="nav-btn">📋 Info</a>
+    <a href="#section-ai" class="nav-btn">🤖 IA</a>
+    <a href="#section-vars" class="nav-btn">🔢 Vars</a>
+    <a href="#section-prompt" class="nav-btn">✏️ Prompt</a>
+    <a href="#section-qr" class="nav-btn">📱 QR</a>
   </nav>
 
   <main>
@@ -37,19 +48,19 @@
     <!-- ========================================================= -->
     <!-- SECTION METADONNÉES -->
     <!-- ========================================================= -->
-    <section class="card">
+    <section class="card" id="section-meta">
       <h2>1. Métadonnées de la fiche</h2>
 
       <label>Catégorie
-        <input id="meta_categorie" type="text" placeholder="Ex : Risque chimique / opérationnel">
+        <input id="meta_categorie" type="text" placeholder="Ex : Risque chimique">
       </label>
 
       <label>Titre de la fiche
-        <input id="meta_titre" type="text" placeholder="Ex : Analyse initiale d'un site RCH">
+        <input id="meta_titre" type="text" placeholder="Ex : Analyse initiale site RCH">
       </label>
 
       <label>Objectif
-        <input id="meta_objectif" type="text" placeholder="Ex : Aider le RCH3/RCH4 dans l'analyse rapide">
+        <input id="meta_objectif" type="text" placeholder="Ex : Aide RCH3/RCH4 analyse rapide">
       </label>
 
       <label>Concepteur
@@ -68,7 +79,7 @@
     <!-- ========================================================= -->
     <!-- INDICES DE CONFIANCE IA -->
     <!-- ========================================================= -->
-    <section class="card">
+    <section class="card" id="section-ai">
       <h2>2. Indices de confiance IA</h2>
 
       <label>ChatGPT
@@ -99,11 +110,11 @@
     <!-- ========================================================= -->
     <!-- VARIABLES -->
     <!-- ========================================================= -->
-    <section class="card">
-      <h2>3. Variables utilisables dans le prompt (max 10)</h2>
+    <section class="card" id="section-vars">
+      <h2>3. Variables du prompt (max 10)</h2>
 
       <p class="helper">
-        Exemple : variable ID <b>code_onu</b> → utilisable dans le prompt avec <code>{{code_onu}}</code>
+        Variable ID <b>code_onu</b> → <code>{{code_onu}}</code> dans le prompt
       </p>
 
       <div id="variablesContainer"></div>
@@ -115,7 +126,7 @@
     <!-- ========================================================= -->
     <!-- PROMPT -->
     <!-- ========================================================= -->
-    <section class="card">
+    <section class="card" id="section-prompt">
       <h2>4. Rédaction du prompt</h2>
       <p class="helper">
         Limite : <strong>4000 caractères</strong> après compactage.<br>
@@ -129,7 +140,7 @@
     <!-- ========================================================= -->
     <!-- GENERATION DU QR CODE -->
     <!-- ========================================================= -->
-    <section class="card">
+    <section class="card" id="section-qr">
       <h2>5. Génération du QR Code</h2>
 
       <button id="btnGenerate" class="btn-generate">🚀 Générer JSON + QR code</button>
