@@ -246,7 +246,7 @@ function onFicheDecoded(fiche) {
 }
 
 // ------------------------------------------------------------------------
-// Lecture via FICHIER
+// Lecture via FICHIER - Gestion erreur améliorée
 // ------------------------------------------------------------------------
 if (fileInput) {
   fileInput.addEventListener("change", async (ev) => {
@@ -256,17 +256,46 @@ if (fileInput) {
     console.log("📁 Lecture fichier QR...");
 
     try {
-      const result = await window.QrScanner.scanImage(file);
-      const text = (typeof result === "string") ? result : result.data;
+      // ✅ Lecture avec gestion d'erreur détaillée
+      const result = await window.QrScanner.scanImage(file, {
+        returnDetailedScanResult: true
+      });
+      
+      // Extraction du texte
+      let text = "";
+      if (typeof result === "string") {
+        text = result;
+      } else if (result && result.data) {
+        text = (typeof result.data === "string") ? result.data : JSON.stringify(result.data);
+      }
       
       console.log("📄 Texte brut QR :", text);
+
+      if (!text || text.length === 0) {
+        throw new Error("QR Code vide ou illisible.");
+      }
       
+      // Décodage de la fiche
       const fiche = decodeFiche(text);
+      console.log("✅ Fiche décodée :", fiche);
+      
       onFicheDecoded(fiche);
       
     } catch (err) {
       console.error("❌ Erreur lecture fichier :", err);
-      alert("❌ Erreur lecture QR : " + err.message);
+      
+      // ✅ Message d'erreur plus explicite
+      let errorMsg = "Erreur lecture QR";
+      
+      if (err.message && err.message !== "undefined") {
+        errorMsg += " : " + err.message;
+      } else if (err.toString && err.toString() !== "[object Object]") {
+        errorMsg += " : " + err.toString();
+      } else {
+        errorMsg += " : Le QR Code n'a pas pu être décodé. Vérifiez qu'il a bien été généré par cette application.";
+      }
+      
+      alert("❌ " + errorMsg);
     }
   });
 }
