@@ -119,17 +119,17 @@ function onFicheDecoded(fiche) {
   // Afficher le bouton reset
   if (btnResetScan) btnResetScan.style.display = "block";
 
-  // 2) ✅ AFFICHAGE CONDENSÉ DES MÉTADONNÉES
+  // 2) ✅ AFFICHAGE CONDENSÉ : Catégorie + Titre sur même ligne
   if (metaHeader) {
     metaHeader.style.display = "block";
     metaHeader.innerHTML = `
-      <div style="margin-bottom:12px;">
-        <div style="font-weight:700;color:#001F8F;font-size:16px;margin-bottom:4px;">
+      <div style="margin-bottom:10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+        <span style="font-weight:700;color:#001F8F;font-size:16px;">
           ${fiche.meta?.categorie || "Catégorie non renseignée"}
-        </div>
-        <div style="font-size:18px;font-weight:600;color:#001F8F;">
+        </span>
+        <span style="font-size:18px;font-weight:600;color:#001F8F;">
           ${fiche.meta?.titre || "Titre inconnu"}
-        </div>
+        </span>
       </div>
       <div style="font-style:italic;color:#555;font-size:14px;margin-bottom:8px;line-height:1.4;">
         <span style="font-weight:600;">Objectif :</span> ${fiche.meta?.objectif || "-"}
