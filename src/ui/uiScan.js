@@ -1,6 +1,6 @@
 // ========================================================================
 // uiScan.js — Lecture + exploitation de fiche IA RCH
-// VERSION FINALE : toutes corrections + bouton reset
+// VERSION FINALE : affichage métadonnées condensé
 // ========================================================================
 
 import { decodeFiche } from "../core/compression.js";
@@ -34,7 +34,7 @@ let scanner = null;
 const btnResetScan = document.getElementById("btnResetScan");
 
 // ------------------------------------------------------------------------
-// ✅ CORRECTION : Cleanup systématique du scanner
+// Cleanup systématique du scanner
 // ------------------------------------------------------------------------
 async function cleanupScanner() {
   if (!scanner) return;
@@ -57,38 +57,30 @@ async function cleanupScanner() {
 }
 
 // ------------------------------------------------------------------------
-// ✅ NOUVELLE FONCTION : Réinitialisation complète
+// Réinitialisation complète
 // ------------------------------------------------------------------------
 function resetScanPage() {
   console.log("🔄 Réinitialisation de la page scan");
 
-  // 1. Cleanup scanner si actif
   cleanupScanner();
-
-  // 2. Reset des données
   window.currentFiche = null;
 
-  // 3. Masquer toutes les sections sauf scan
   if (sectionScan) sectionScan.style.display = "block";
   if (sectionMeta) sectionMeta.style.display = "none";
   if (sectionVars) sectionVars.style.display = "none";
   if (sectionExtra) sectionExtra.style.display = "none";
   if (sectionPrompt) sectionPrompt.style.display = "none";
 
-  // 4. Vider les contenus
   if (metaHeader) metaHeader.innerHTML = "";
   if (scanVariables) scanVariables.innerHTML = "";
   if (extraInput) extraInput.value = "";
   if (promptResult) promptResult.textContent = "";
   if (aiButtons) aiButtons.innerHTML = "";
 
-  // 5. Reset input fichier
   if (fileInput) fileInput.value = "";
 
-  // 6. Masquer le bouton reset
   if (btnResetScan) btnResetScan.style.display = "none";
 
-  // 7. Réactiver les boutons caméra
   if (btnStartCam) btnStartCam.disabled = false;
   if (btnStopCam) btnStopCam.disabled = true;
   if (videoContainer) videoContainer.style.display = "none";
@@ -110,6 +102,7 @@ if (btnResetScan) {
 
 // ------------------------------------------------------------------------
 // Quand une fiche est décodée (depuis fichier ou caméra)
+// ✅ AFFICHAGE CONDENSÉ DES MÉTADONNÉES
 // ------------------------------------------------------------------------
 function onFicheDecoded(fiche) {
   console.log("✅ Fiche décodée :", fiche);
@@ -123,10 +116,10 @@ function onFicheDecoded(fiche) {
   if (sectionExtra)  sectionExtra.style.display  = "block";
   if (sectionPrompt) sectionPrompt.style.display = "block";
 
-  // ✅ Afficher le bouton reset
+  // Afficher le bouton reset
   if (btnResetScan) btnResetScan.style.display = "block";
 
-  // 2) Remplir les métadonnées - Format condensé
+  // 2) ✅ AFFICHAGE CONDENSÉ DES MÉTADONNÉES
   if (metaHeader) {
     metaHeader.style.display = "block";
     metaHeader.innerHTML = `
@@ -160,7 +153,6 @@ function onFicheDecoded(fiche) {
       const lab = document.createElement("label");
       lab.textContent = v.label || v.id;
       
-      // Indicateur requis
       if (v.required) {
         const req = document.createElement("span");
         req.textContent = " *";
@@ -208,7 +200,6 @@ function onFicheDecoded(fiche) {
           <input id="${v.id}_lon" placeholder="Longitude" type="number" step="0.000001" ${v.required ? 'required' : ''}>
         `;
         
-        // Branchement GPS après insertion dans le DOM
         setTimeout(() => {
           const btn = document.getElementById(`${v.id}_gps`);
           if (!btn) return;
@@ -250,7 +241,6 @@ function onFicheDecoded(fiche) {
     });
   }
 
-  // Nettoyage de l'affichage prompt / boutons
   if (promptResult) promptResult.textContent = "";
   if (aiButtons) aiButtons.innerHTML = "";
 }
@@ -289,7 +279,6 @@ if (btnStartCam && btnStopCam && videoEl) {
   btnStartCam.onclick = async () => {
     console.log("🎥 Démarrage caméra...");
 
-    // ✅ CORRECTION : Cleanup avant de créer nouveau scanner
     await cleanupScanner();
 
     videoContainer.style.display = "block";
@@ -306,7 +295,6 @@ if (btnStartCam && btnStopCam && videoEl) {
           try {
             const fiche = decodeFiche(text);
             
-            // On stoppe dès qu'un QR valide est lu
             cleanupScanner().then(() => {
               videoContainer.style.display = "none";
               btnStartCam.disabled = false;
@@ -316,7 +304,6 @@ if (btnStartCam && btnStopCam && videoEl) {
             
           } catch (e) {
             console.warn("⚠️ QR non compatible :", e.message);
-            // On continue le scan
           }
         },
         {
@@ -362,7 +349,6 @@ if (btnBuildPrompt) {
       return;
     }
 
-    // Vérification champs requis
     let missingFields = [];
     (fiche.prompt?.variables || []).forEach(v => {
       if (!v.required) return;
@@ -386,7 +372,6 @@ if (btnBuildPrompt) {
       return;
     }
 
-    // Génération prompt
     let prompt = fiche.prompt?.base || "";
 
     (fiche.prompt?.variables || []).forEach(v => {
@@ -414,7 +399,6 @@ if (btnBuildPrompt) {
   };
 }
 
-// Copier le prompt
 if (btnCopyPrompt) {
   btnCopyPrompt.onclick = async () => {
     const txt = promptResult?.textContent.trim();
@@ -483,9 +467,6 @@ function buildAIButtons(fiche, prompt) {
   mkBtn("Mistral",   levels.mistral,   "https://chat.mistral.ai/chat?q=");
 }
 
-// ------------------------------------------------------------------------
-// Cleanup au déchargement de la page
-// ------------------------------------------------------------------------
 window.addEventListener("beforeunload", () => {
   cleanupScanner();
 });
