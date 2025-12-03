@@ -24,7 +24,14 @@
   </nav>
 
   <main>
-    <h1 class="page-title">Lecture & exploitation d’une fiche IA – RCH</h1>
+    <h1 class="page-title">Lecture & exploitation d'une fiche IA – RCH</h1>
+
+    <!-- ✅ BOUTON RESET - Repositionné et stylé -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <button id="btnResetScan" class="btn-reset-scan" style="display:none;">
+        🔄 Scanner une nouvelle fiche
+      </button>
+    </div>
 
     <!-- SCAN / IMPORT -->
     <section class="card" id="sectionScan">
@@ -58,7 +65,7 @@
     <!-- EXTRA -->
     <section class="card" id="sectionExtra" style="display:none;">
       <h2>Informations complémentaires</h2>
-      <textarea id="extra_input" rows="5" placeholder="Ajouter des précisions utiles à l’IA…"></textarea>
+      <textarea id="extra_input" rows="5" placeholder="Ajouter des précisions utiles à l'IA…"></textarea>
     </section>
 
     <!-- PROMPT -->
